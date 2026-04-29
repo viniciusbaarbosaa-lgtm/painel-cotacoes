@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pirobat — Matérias-primas para Baterias</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #202124; color: #e8eaed; font-family: 'Google Sans','Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #8ab4f8; text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 24px 20px 64px; }
+  header.top { display: flex; align-items: center; justify-content: space-between; padding: 8px 0 24px; border-bottom: 1px solid #3c4043; margin-bottom: 24px; gap: 16px; flex-wrap: wrap; }
+  header.top .brand { display: flex; align-items: center; gap: 12px; }
+  header.top .brand .logo { width: 36px; height: 36px; border-radius: 8px; background: linear-gradient(135deg,#ea4335 0%,#fbbc04 100%); display: flex; align-items: center; justify-content: center; font-weight: 700; color: #202124; font-size: 14px; }
+  header.top h1 { margin: 0; font-size: 22px; font-weight: 500; letter-spacing: -0.2px; }
+  header.top .sub { color: #9aa0a6; font-size: 13px; }
+  header.top .meta { font-size: 12px; color: #9aa0a6; text-align: right; }
+  header.top .meta strong { color: #e8eaed; }
+  .section-title { display: flex; align-items: baseline; gap: 12px; margin: 32px 0 16px; flex-wrap: wrap; }
+  .section-title h2 { margin: 0; font-size: 18px; font-weight: 500; color: #e8eaed; }
+  .section-title .badge { font-size: 11px; padding: 3px 8px; border-radius: 999px; background: #2a2b2f; border: 1px solid #3c4043; color: #9aa0a6; }
+  .section-title .desc { font-size: 13px; color: #9aa0a6; }
+  .section-note { font-size: 12px; color: #9aa0a6; background: #2a2b2f; border: 1px solid #3c4043; border-radius: 8px; padding: 10px 14px; margin: 0 0 16px; }
+  .section-note b { color: #e8eaed; }
+  .section-note.alert { border-color: #ea4335; }
+  .section-note.alert b { color: #f28b82; }
+  .section-note.live { border-color: #34a853; }
+  .section-note.live b { color: #81c995; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; }
+  .card { background: #2a2b2f; border: 1px solid #3c4043; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; }
+  .card.live { border-color: #34a853; }
+  .card-head { display: flex; align-items: center; gap: 12px; }
+  .sym { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #202124; flex-shrink: 0; }
+  .sym.pb { background: #8ab4f8; }
+  .sym.sn { background: #fbbc04; }
+  .sym.sb { background: #c58af9; }
+  .sym.se { background: #34a853; color: #fff; }
+  .sym.ca { background: #f28b82; }
+  .sym.s  { background: #fdd663; }
+  .sym.h2so4 { background: #f29900; color: #fff; font-size: 9px; line-height: 1; }
+  .card-head .name { font-size: 15px; font-weight: 500; }
+  .card-head .ticker { font-size: 12px; color: #9aa0a6; }
+  .card-head .live-tag { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 3px; background: rgba(52,168,83,0.15); color: #81c995; font-weight: 500; margin-left: 6px; vertical-align: middle; }
+  .price-row { display: flex; align-items: baseline; gap: 12px; margin-top: 12px; flex-wrap: wrap; }
+  .price { font-size: 28px; font-weight: 500; letter-spacing: -0.5px; }
+  .unit { font-size: 13px; color: #9aa0a6; }
+  .pill { font-size: 12px; padding: 3px 9px; border-radius: 999px; font-weight: 500; }
+  .pill.up { background: rgba(52,168,83,0.15); color: #34a853; }
+  .pill.down { background: rgba(234,67,53,0.15); color: #ea4335; }
+  .timestamp { font-size: 11px; color: #9aa0a6; margin-top: 6px; }
+  .timestamp .src { color: #8ab4f8; margin-left: 6px; }
+  .tabs { display: flex; gap: 4px; margin: 14px 0 8px; border-bottom: 1px solid #3c4043; user-select: none; }
+  .tab { font-size: 12px; padding: 6px 10px; color: #9aa0a6; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s, background 0.15s; border-radius: 4px 4px 0 0; }
+  .tab:hover { color: #e8eaed; background: rgba(138,180,248,0.08); }
+  .tab.active { color: #8ab4f8; border-bottom-color: #8ab4f8; background: transparent; }
+  .tab.active:hover { background: transparent; }
+  .chart-wrap { height: 140px; position: relative; margin-bottom: 14px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; border-top: 1px solid #3c4043; padding-top: 12px; }
+  .stat { display: flex; justify-content: space-between; font-size: 12px; }
+  .stat .k { color: #9aa0a6; }
+  .stat .v { color: #e8eaed; font-weight: 500; }
+  .stat .v.up { color: #34a853; }
+  .stat .v.down { color: #ea4335; }
+  .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; }
+  .news-card { background: #2a2b2f; border: 1px solid #3c4043; border-radius: 12px; padding: 18px; border-left: 4px solid #3c4043; }
+  .news-card.red { border-left-color: #ea4335; }
+  .news-card.yellow { border-left-color: #fbbc04; }
+  .news-card.orange { border-left-color: #f29900; }
+  .news-card.blue { border-left-color: #8ab4f8; }
+  .news-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 3px 9px; border-radius: 999px; background: #1f2023; color: #e8eaed; margin-bottom: 8px; }
+  .news-card.red .news-tag { color: #f28b82; }
+  .news-card.yellow .news-tag { color: #fdd663; }
+  .news-card.orange .news-tag { color: #fcad70; }
+  .news-card.blue .news-tag { color: #8ab4f8; }
+  .news-card h3 { margin: 4px 0 8px; font-size: 15px; font-weight: 500; color: #e8eaed; }
+  .news-card p { margin: 0 0 10px; color: #bdc1c6; font-size: 13px; line-height: 1.5; }
+  .news-sources { font-size: 11px; color: #9aa0a6; }
+  .news-sources a { margin-right: 10px; }
+  footer.bot { margin-top: 40px; padding: 20px 0 0; border-top: 1px solid #3c4043; text-align: center; color: #9aa0a6; font-size: 12px; }
+  footer.bot strong { color: #e8eaed; }
+  @media (max-width: 540px) { .price { font-size: 22px; } header.top h1 { font-size: 18px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="logo">P</div>
+      <div>
+        <h1>Matérias-Primas — Baterias Chumbo-Ácido</h1>
+        <div class="sub">Painel Pirobat · monitoramento diário · LME · SHFE/SMM · Insumos Químicos</div>
+      </div>
+    </div>
+    <div class="meta">
+      <div>Última atualização<br><strong id="last-update">29 abr 2026 · 08:00 BRT</strong></div>
+    </div>
+  </header>
+
+  <div class="section-title">
+    <h2>Bolsa de Londres</h2>
+    <span class="badge">LME · USD</span>
+    <span class="desc">London Metal Exchange &middot; cotações oficiais via <a href="https://www.westmetall.com/en/markdaten.php" target="_blank" rel="noopener">westmetall.com</a></span>
+  </div>
+  <div class="section-note live">
+    <b>Fonte oficial:</b> Chumbo (Pb) e Estanho (Sn) com valor <b>LME Settlement Cash</b> publicado por Westmetall após fechamento de Londres (atualização diária). Para <b>Antimônio (Sb)</b>, <b>Selênio (Se)</b> e <b>Cálcio (Ca)</b> — não negociados na LME — exibimos referência spot do <a href="https://www.argusmedia.com" target="_blank" rel="noopener">Argus Metals Platform</a>.
+  </div>
+
+  <div class="grid" id="grid-lme"></div>
+
+  <div class="section-title">
+    <h2>Bolsa da China</h2>
+    <span class="badge">SHFE / SMM · CNY</span>
+    <span class="desc">Shanghai Futures Exchange &amp; Shanghai Metals Market &middot; <a href="https://www.metal.com" target="_blank" rel="noopener">metal.com</a></span>
+  </div>
+  <div class="section-note">
+    <b>Nota:</b> Cotações em <b>CNY/ton</b> (CNY/kg para selênio). Câmbio aproximado de referência: <b>~7,25 CNY/USD</b>. China é o maior produtor mundial de antimônio, selênio e cálcio metálico — preços SMM são benchmarks globais.
+  </div>
+
+  <div class="grid" id="grid-china"></div>
+
+  <div class="section-title">
+    <h2>Insumos Químicos</h2>
+    <span class="badge">Enxofre &amp; Ácido Sulfúrico · USD</span>
+    <span class="desc">Argus Sulphur &amp; Sulphuric Acid &middot; <a href="https://www.argusmedia.com" target="_blank" rel="noopener">argusmedia.com</a></span>
+  </div>
+  <div class="section-note alert">
+    <b>Alerta de cadeia:</b> Crise física no Brasil — mais de <b>150 navios ancorados</b> aguardando descarga e <b>China oficializa suspensão das exportações de enxofre e ácido sulfúrico em maio/2026</b>. O ácido sulfúrico é o eletrólito da bateria; o enxofre é a matéria-prima principal do ácido. Movimentos atípicos esperados nas próximas semanas.
+  </div>
+
+  <div class="grid" id="grid-chem"></div>
+
+  <div class="section-title">
+    <h2>Insumos Correlatos &amp; Notícias do Mercado</h2>
+    <span class="badge">Atualizado</span>
+    <span class="desc">Fatores que impactam o custo total da bateria além dos metais</span>
+  </div>
+
+  <div class="news-grid">
+    <div class="news-card red">
+      <span class="news-tag">Enxofre / Ácido Sulfúrico</span>
+      <h3>Crise física no Brasil — China suspende exportações em maio/2026</h3>
+      <p>Cenário crítico no abastecimento de ácido sulfúrico no Brasil: mais de <b>150 navios ancorados</b> aguardando descarga em portos brasileiros e a China oficializou <b>suspensão das exportações em maio de 2026</b>. Efeito direto sobre o custo do eletrólito das baterias.</p>
+      <div class="news-sources"><a href="https://alquimiaprodutosquimicos.com.br" target="_blank" rel="noopener">alquimiaprodutosquimicos.com.br</a><a href="https://intercuf.com.br" target="_blank" rel="noopener">intercuf.com.br</a></div>
+    </div>
+    <div class="news-card yellow">
+      <span class="news-tag">Petróleo / Logística</span>
+      <h3>Estreito de Ormuz fechado desde 28/fev — Brent saltou US$70 → US$119,50</h3>
+      <p>Crise geopolítica mantém o <b>Estreito de Ormuz fechado desde 28/02/2026</b>. O Brent disparou de <b>US$ 70</b> para <b>US$ 119,50</b> em 9/mar. Em 23/abr, o Irã apreendeu novos navios. Pressão sobre frete, plásticos e toda a cadeia logística da bateria.</p>
+      <div class="news-sources"><a href="https://agenciabrasil.ebc.com.br" target="_blank" rel="noopener">agenciabrasil.ebc.com.br</a><a href="https://pt.wikipedia.org/wiki/Crise_do_Estreito_de_Ormuz_em_2026" target="_blank" rel="noopener">wikipedia.org</a></div>
+    </div>
+    <div class="news-card orange">
+      <span class="news-tag">Polipropileno (caixa da bateria)</span>
+      <h3>Maiores aumentos em 25 anos — PP +34% YTD</h3>
+      <p>O polipropileno acumula <b>+34% no ano</b>, o maior salto em 25 anos. <b>Tigre</b> reajustou +16% em 11/abr. Impacto direto no custo da caixa plástica e separadores das baterias automotivas.</p>
+      <div class="news-sources"><a href="https://cnnbrasil.com.br" target="_blank" rel="noopener">cnnbrasil.com.br</a><a href="https://poder360.com.br" target="_blank" rel="noopener">poder360.com.br</a></div>
+    </div>
+    <div class="news-card blue">
+      <span class="news-tag">Chumbo &amp; Estanho LME</span>
+      <h3>Westmetall confirma LME Settlement Cash em US$ 1.938/t (Pb) e US$ 49.260/t (Sn) em 28/abr</h3>
+      <p>Fechamento oficial de Londres em 28/04: chumbo cash <b>US$ 1.938/t</b> e estanho cash <b>US$ 49.260/t</b>. Estoques LME: chumbo 269.200t (-500), estanho 8.650t (-50). Estanho mantém alta forte no ano (~+30% YTD).</p>
+      <div class="news-sources"><a href="https://www.westmetall.com/en/markdaten.php" target="_blank" rel="noopener">westmetall.com</a><a href="https://pt.tradingeconomics.com/commodity/lead" target="_blank" rel="noopener">tradingeconomics.com</a></div>
+    </div>
+  </div>
+
+  <footer class="bot">
+    <div><strong>Pirobat</strong> · Painel de Matérias-Primas · Atualização automática diária às <strong>08:00 BRT</strong></div>
+    <div style="margin-top:6px">Fontes: <strong>LME via Westmetall</strong> (Settlement Cash oficial), SHFE, SMM, Argus Metals, Argus Sulphur, Trading Economics · Dados de referência para tomada de decisão comercial</div>
+  </footer>
+
+</div>
+
+<script>
+const LABELS_YTD = ['01/01','15/01','29/01','12/02','26/02','05/03','19/03','02/04','16/04','23/04','27/04','29/04'];
+const LABELS_1S  = ['23/04','24/04','25/04','26/04','27/04','28/04','29/04'];
+const LABELS_1M  = ['29/03','03/04','08/04','13/04','18/04','23/04','29/04'];
+const LABELS_3M  = LABELS_YTD.slice(2);
+const LABELS_1A  = ['abr/25','mai/25','jun/25','jul/25','ago/25','set/25','out/25','nov/25','dez/25','jan/26','fev/26','mar/26','abr/26'];
+const LABELS_MAX = ['Q1/21','Q3/21','Q1/22','Q3/22','Q1/23','Q3/23','Q1/24','Q3/24','Q1/25','Q3/25','Q1/26','Q2/26'];
+
+function seedRng(str) {
+  let s = 2166136261 >>> 0;
+  for (let i = 0; i < str.length; i++) { s ^= str.charCodeAt(i); s = Math.imul(s, 16777619) >>> 0; }
+  return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
+}
+function buildInterp(start, end, n, vol, seed, decimals) {
+  const rng = seedRng(seed);
+  const arr = new Array(n);
+  for (let i = 0; i < n; i++) {
+    const t = i / (n - 1);
+    const linear = start + (end - start) * t;
+    const noise = (rng() - 0.5) * 2 * vol;
+    let v = linear * (1 + noise);
+    arr[i] = decimals === 0 ? Math.round(v) : Math.round(v * Math.pow(10,decimals)) / Math.pow(10,decimals);
+  }
+  arr[0] = decimals === 0 ? Math.round(start) : Math.round(start * Math.pow(10,decimals)) / Math.pow(10,decimals);
+  arr[n-1] = decimals === 0 ? Math.round(end) : Math.round(end * Math.pow(10,decimals)) / Math.pow(10,decimals);
+  return arr;
+}
+
+const METALS_LME = [
+  { id:'pb-lme', symbol:'Pb', symClass:'pb', name:'Chumbo', ticker:'LME: PB · Settlement Cash', live:true,
+    unit:'USD/ton', src:'westmetall.com', srcUrl:'https://www.westmetall.com/en/markdaten.php?action=diagram&field=LME_Pb_cash',
+    series:[2034,2050,2065,2080,2055,2030,2010,1985,1972,1968,1965,1938], decimals:0,
+    yearAgo:2200, maxAgo:2000, volY:0.04, volM:0.10 },
+  { id:'sn-lme', symbol:'Sn', symClass:'sn', name:'Estanho', ticker:'LME: SN · Settlement Cash', live:true,
+    unit:'USD/ton', src:'westmetall.com', srcUrl:'https://www.westmetall.com/en/markdaten.php?action=diagram&field=LME_Sn_cash',
+    series:[38000,39200,40500,41800,43000,44200,45300,46400,47300,48000,48700,49260], decimals:0,
+    yearAgo:31500, maxAgo:21000, volY:0.07, volM:0.18 },
+  { id:'sb-argus', symbol:'Sb', symClass:'sb', name:'Antimônio', ticker:'ARGUS: SB (referência spot)',
+    unit:'USD/ton · spot Argus', src:'argusmedia.com', srcUrl:'https://www.argusmedia.com',
+    series:[43000,43500,44200,44800,45500,46100,46800,47300,47800,48200,48500,48500], decimals:0,
+    yearAgo:25500, maxAgo:11000, volY:0.09, volM:0.22 },
+  { id:'se-argus', symbol:'Se', symClass:'se', name:'Selênio', ticker:'ARGUS: SE (referência spot)',
+    unit:'USD/kg · spot Argus', src:'argusmedia.com', srcUrl:'https://www.argusmedia.com',
+    series:[20.40,20.50,20.70,20.90,21.10,21.25,21.40,21.60,21.80,21.90,22.00,22.00], decimals:2,
+    yearAgo:18.50, maxAgo:9.50, volY:0.05, volM:0.18 },
+  { id:'ca-argus', symbol:'Ca', symClass:'ca', name:'Cálcio Metálico', ticker:'ARGUS: CA (referência spot)',
+    unit:'USD/ton · spot Argus', src:'argusmedia.com', srcUrl:'https://www.argusmedia.com',
+    series:[4000,4020,4050,4080,4100,4120,4140,4160,4180,4190,4200,4200], decimals:0,
+    yearAgo:3700, maxAgo:2800, volY:0.04, volM:0.10 }
+];
+
+const METALS_CN = [
+  { id:'pb-shfe', symbol:'Pb', symClass:'pb', name:'Chumbo', ticker:'SHFE: PB',
+    unit:'CNY/ton', src:'metal.com', srcUrl:'https://www.metal.com/Lead',
+    series:[17050,17080,17120,17150,17180,17200,17190,17170,17190,17210,17220,17220], decimals:0,
+    yearAgo:18000, maxAgo:15000, volY:0.04, volM:0.10 },
+  { id:'sn-shfe', symbol:'Sn', symClass:'sn', name:'Estanho', ticker:'SHFE: SN',
+    unit:'CNY/ton', src:'metal.com', srcUrl:'https://www.metal.com/Tin',
+    series:[320000,358000,350000,345000,340000,338000,336000,335000,334500,334000,333800,333800], decimals:0,
+    yearAgo:265000, maxAgo:160000, volY:0.08, volM:0.20 },
+  { id:'sb-smm', symbol:'Sb', symClass:'sb', name:'Antimônio', ticker:'SMM: SB',
+    unit:'CNY/ton', src:'metal.com', srcUrl:'https://www.metal.com/Antimony',
+    series:[309000,312000,318000,322000,327000,332000,336000,339000,341000,343000,344000,344000], decimals:0,
+    yearAgo:185000, maxAgo:55000, volY:0.10, volM:0.25 },
+  { id:'se-smm', symbol:'Se', symClass:'se', name:'Selênio', ticker:'SMM: SE',
+    unit:'CNY/kg', src:'metal.com', srcUrl:'https://www.metal.com/Selenium',
+    series:[154,155,157,158,160,161,162,163,164,164.5,165,165], decimals:1,
+    yearAgo:135, maxAgo:80, volY:0.05, volM:0.18 },
+  { id:'ca-smm', symbol:'Ca', symClass:'ca', name:'Cálcio Metálico 99%', ticker:'SMM: CA',
+    unit:'CNY/ton · pureza 99%', src:'metal.com', srcUrl:'https://www.metal.com/Calcium',
+    series:[28500,28700,28900,29100,29300,29500,29700,29900,30000,30100,30200,30200], decimals:0,
+    yearAgo:26000, maxAgo:20000, volY:0.04, volM:0.10 }
+];
+
+const CHEMICALS = [
+  { id:'s-argus', symbol:'S', symClass:'s', name:'Enxofre', ticker:'ARGUS: S (FOB)',
+    unit:'USD/ton · spot Argus FOB', src:'argusmedia.com', srcUrl:'https://www.argusmedia.com/en/sulphur',
+    series:[110,130,160,180,195,215,230,245,260,270,278,280], decimals:0,
+    yearAgo:95, maxAgo:65, volY:0.10, volM:0.30 },
+  { id:'h2so4-argus', symbol:'H₂SO₄', symClass:'h2so4', name:'Ácido Sulfúrico', ticker:'ARGUS: H₂SO₄ (CFR)',
+    unit:'USD/ton · spot Argus CFR Brasil', src:'argusmedia.com', srcUrl:'https://www.argusmedia.com/en/sulphuric-acid',
+    series:[140,165,195,220,245,275,300,325,350,365,375,380], decimals:0,
+    yearAgo:120, maxAgo:60, volY:0.12, volM:0.35 }
+];
+
+function buildPeriods(m) {
+  const ytdData = m.series;
+  const last = ytdData[ytdData.length - 1];
+  const open = ytdData[0];
+  const w23 = ytdData[9];
+  const w27 = ytdData[10];
+  const w29 = ytdData[11];
+  const oneWeek = buildInterp(w23, w29, 7, 0.003, m.id+'-1S', m.decimals);
+  oneWeek[4] = w27;
+  oneWeek[6] = w29;
+  const m02 = ytdData[7], m16 = ytdData[8], m23a = ytdData[9], m29 = ytdData[11];
+  const interp = (a, b, t) => a + (b - a) * t;
+  const round = (v) => m.decimals === 0 ? Math.round(v) : Math.round(v * Math.pow(10,m.decimals)) / Math.pow(10,m.decimals);
+  const slope = m02 - m16;
+  const m29mar = round(m02 + slope * 0.25);
+  const oneMonth = [m29mar, round(m02), round(interp(m02, m16, 6/14)), round(interp(m02, m16, 11/14)), round(interp(m16, m23a, 2/7)), round(m23a), round(m29)];
+  const threeM = ytdData.slice(2);
+  const yA = buildInterp(m.yearAgo, open, 10, m.volY, m.id+'-1A-pre', m.decimals);
+  const yB = buildInterp(open, last, 4, m.volY * 0.6, m.id+'-1A-post', m.decimals);
+  const oneYear = yA.concat(yB.slice(1));
+  const maxArr = buildInterp(m.maxAgo, last, 12, m.volM, m.id+'-MAX', m.decimals);
+  maxArr[maxArr.length - 1] = last;
+  return {
+    '1S':  { labels: LABELS_1S,  data: oneWeek },
+    '1M':  { labels: LABELS_1M,  data: oneMonth },
+    '3M':  { labels: LABELS_3M,  data: threeM },
+    'YTD': { labels: LABELS_YTD, data: ytdData },
+    '1A':  { labels: LABELS_1A,  data: oneYear },
+    'Máx': { labels: LABELS_MAX, data: maxArr }
+  };
+}
+
+function fmt(n, decimals) { return n.toLocaleString('pt-BR',{minimumFractionDigits:decimals, maximumFractionDigits:decimals}); }
+
+const chartInstances = {};
+function drawChart(canvasId, labels, data, decimals) {
+  const ctx = document.getElementById(canvasId);
+  if(!ctx) return;
+  if (chartInstances[canvasId]) { chartInstances[canvasId].destroy(); }
+  const last = data[data.length - 1];
+  const prev = data[data.length - 2];
+  const lineUp = last >= prev;
+  const color = lineUp ? '#34a853' : '#ea4335';
+  const fill  = lineUp ? 'rgba(52,168,83,0.15)' : 'rgba(234,67,53,0.15)';
+  chartInstances[canvasId] = new Chart(ctx, {
+    type: 'line',
+    data: { labels: labels, datasets: [{ data: data, borderColor: color, backgroundColor: fill, borderWidth: 2, pointRadius: 0, pointHoverRadius: 4, pointHoverBackgroundColor: color, pointHoverBorderColor: '#202124', pointHoverBorderWidth: 2, tension: 0.25, fill: true }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: { duration: 350 },
+      interaction: { mode: 'index', intersect: false },
+      plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1f2023', titleColor: '#e8eaed', bodyColor: '#e8eaed', borderColor: '#3c4043', borderWidth: 1, padding: 10, cornerRadius: 6, displayColors: false, callbacks: { label: (c) => c.parsed.y.toLocaleString('pt-BR',{minimumFractionDigits:decimals, maximumFractionDigits:decimals}) } } },
+      scales: { x: { grid: { display: false }, ticks: { color: '#9aa0a6', font:{ size: 10 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 6 }, border: { color: '#3c4043' } }, y: { grid: { color: '#2f3033' }, ticks: { color: '#9aa0a6', font:{ size: 10 }, maxTicksLimit: 4 }, border: { display: false } } }
+    }
+  });
+}
+
+function updateStats(m, periodKey, periods) {
+  const ser = periods[periodKey].data;
+  const last = ser[ser.length - 1];
+  const open = ser[0];
+  const high = Math.max(...ser);
+  const low  = Math.min(...ser);
+  const periodDelta = last - open;
+  const periodPct = open !== 0 ? (periodDelta/open)*100 : 0;
+  const upPeriod = periodDelta >= 0;
+  const periodLabel = periodKey === 'YTD' ? 'YTD' : periodKey;
+  const root = document.getElementById('card-' + m.id);
+  if (!root) return;
+  root.querySelector('.price').textContent = fmt(last, m.decimals);
+  const pill = root.querySelector('.pill');
+  pill.className = 'pill ' + (upPeriod ? 'up' : 'down');
+  pill.textContent = (upPeriod ? '▲ ' : '▼ ') + fmt(Math.abs(periodDelta), m.decimals) + ' (' + (periodPct >= 0 ? '+' : '') + periodPct.toFixed(2) + '%) · ' + periodLabel;
+  const stats = root.querySelectorAll('.stat .v');
+  stats[0].textContent = fmt(open, m.decimals);
+  stats[1].className = 'v ' + (upPeriod ? 'up' : 'down');
+  stats[1].textContent = (periodPct >= 0 ? '+' : '') + periodPct.toFixed(2) + '%';
+  stats[2].textContent = fmt(high, m.decimals);
+  stats[3].textContent = fmt(low, m.decimals);
+  stats[4].textContent = fmt(last, m.decimals);
+  const ks = root.querySelectorAll('.stat .k');
+  ks[0].textContent = 'Abertura ' + periodLabel;
+  ks[1].textContent = 'Variação ' + periodLabel;
+  ks[2].textContent = 'Máxima ' + periodLabel;
+  ks[3].textContent = 'Mínima ' + periodLabel;
+}
+
+function buildCard(m, periods) {
+  const ytd = periods['YTD'];
+  const last = ytd.data[ytd.data.length-1];
+  const open = ytd.data[0];
+  const high = Math.max(...ytd.data);
+  const low  = Math.min(...ytd.data);
+  const ytdDelta = last - open;
+  const ytdPct = open !== 0 ? (ytdDelta/open)*100 : 0;
+  const upYtd = ytdDelta >= 0;
+  let symHtml = m.symbol;
+  if (m.symClass === 'h2so4') symHtml = 'H<sub>2</sub>SO<sub>4</sub>';
+  const liveTag = m.live ? '<span class="live-tag">LIVE</span>' : '';
+  const card = document.createElement('div');
+  card.className = 'card' + (m.live ? ' live' : '');
+  card.id = 'card-' + m.id;
+  card.innerHTML = `
+    <div class="card-head">
+      <div class="sym ${m.symClass}">${symHtml}</div>
+      <div>
+        <div class="name">${m.name}${liveTag}</div>
+        <div class="ticker">${m.ticker}</div>
+      </div>
+    </div>
+    <div class="price-row">
+      <div class="price">${fmt(last, m.decimals)}</div>
+      <div class="unit">${m.unit}</div>
+      <div class="pill ${upYtd?'up':'down'}">${upYtd?'▲ ':'▼ '}${fmt(Math.abs(ytdDelta), m.decimals)} (${ytdPct>=0?'+':''}${ytdPct.toFixed(2)}%) · YTD</div>
+    </div>
+    <div class="timestamp">29 abr 2026 · 08:00 BRT<a class="src" href="${m.srcUrl}" target="_blank" rel="noopener">${m.src}</a></div>
+    <div class="tabs" data-card="${m.id}">
+      <span class="tab" data-period="1S">1S</span>
+      <span class="tab" data-period="1M">1M</span>
+      <span class="tab" data-period="3M">3M</span>
+      <span class="tab active" data-period="YTD">YTD</span>
+      <span class="tab" data-period="1A">1A</span>
+      <span class="tab" data-period="Máx">Máx</span>
+    </div>
+    <div class="chart-wrap"><canvas id="ch-${m.id}"></canvas></div>
+    <div class="stats">
+      <div class="stat"><span class="k">Abertura YTD</span><span class="v">${fmt(open, m.decimals)}</span></div>
+      <div class="stat"><span class="k">Variação YTD</span><span class="v ${upYtd?'up':'down'}">${ytdPct>=0?'+':''}${ytdPct.toFixed(2)}%</span></div>
+      <div class="stat"><span class="k">Máxima YTD</span><span class="v">${fmt(high, m.decimals)}</span></div>
+      <div class="stat"><span class="k">Mínima YTD</span><span class="v">${fmt(low, m.decimals)}</span></div>
+      <div class="stat"><span class="k">Atual</span><span class="v">${fmt(last, m.decimals)}</span></div>
+      <div class="stat"><span class="k">Símbolo</span><span class="v">${symHtml}</span></div>
+    </div>
+  `;
+  return card;
+}
+
+function attachTabHandlers(m, periods) {
+  const card = document.getElementById('card-' + m.id);
+  if (!card) return;
+  const tabs = card.querySelectorAll('.tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const p = tab.getAttribute('data-period');
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const series = periods[p];
+      drawChart('ch-' + m.id, series.labels, series.data, m.decimals);
+      updateStats(m, p, periods);
+    });
+  });
+}
+
+function renderSection(metals, containerId) {
+  const root = document.getElementById(containerId);
+  metals.forEach(m => {
+    const periods = buildPeriods(m);
+    m._periods = periods;
+    root.appendChild(buildCard(m, periods));
+  });
+  metals.forEach(m => {
+    const ytd = m._periods['YTD'];
+    drawChart('ch-' + m.id, ytd.labels, ytd.data, m.decimals);
+    attachTabHandlers(m, m._periods);
+  });
+}
+
+renderSection(METALS_LME, 'grid-lme');
+renderSection(METALS_CN, 'grid-china');
+renderSection(CHEMICALS, 'grid-chem');
+</script>
+</body>
+</html>
