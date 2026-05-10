@@ -97,7 +97,7 @@
       </div>
     </div>
     <div class="meta">
-      <div>Última atualização<br><strong id="last-update">9 mai 2026 · 08:00 BRT</strong></div>
+      <div>Última atualização<br><strong id="last-update">10 mai 2026 · 08:00 BRT</strong></div>
     </div>
   </header>
 
@@ -176,7 +176,7 @@
 </div>
 
 <script>
-const LABELS_YTD = ['01/01','15/01','29/01','12/02','26/02','05/03','19/03','02/04','16/04','23/04','28/04','09/05'];
+const LABELS_YTD = ['01/01','15/01','29/01','12/02','26/02','05/03','19/03','02/04','16/04','23/04','28/04','10/05'];
 const LABELS_1S  = ['23/04','24/04','25/04','26/04','27/04','28/04','29/04'];
 const LABELS_1M  = ['29/03','03/04','08/04','13/04','18/04','23/04','29/04'];
 const LABELS_3M  = LABELS_YTD.slice(2);
@@ -374,7 +374,7 @@ function buildCard(m, periods) {
       <div class="unit">${m.unit}</div>
       <div class="pill ${upYtd?'up':'down'}">${upYtd?'▲ ':'▼ '}${fmt(Math.abs(ytdDelta), m.decimals)} (${ytdPct>=0?'+':''}${ytdPct.toFixed(2)}%) · YTD</div>
     </div>
-    <div class="timestamp">9 mai 2026 · 08:00 BRT<a class="src" href="${m.srcUrl}" target="_blank" rel="noopener">${m.src}</a></div>
+    <div class="timestamp">10 mai 2026 · 08:00 BRT<a class="src" href="${m.srcUrl}" target="_blank" rel="noopener">${m.src}</a></div>
     <div class="tabs" data-card="${m.id}">
       <span class="tab" data-period="1S">1S</span>
       <span class="tab" data-period="1M">1M</span>
