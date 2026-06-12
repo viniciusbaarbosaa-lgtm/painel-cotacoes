@@ -11,37 +11,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Pirobat — Matérias-primas para Baterias</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.0/dist/chart.umd.js" integrity="sha384-iU8HYtnGQ8Cy4zl7gbNMOhsDTTKX02BTXptVP/vqAWIaTfM7isw76iyZCsjL2eVi" crossorigin="anonymous"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Palanquin+Dark:wght@500;600;700&family=Quicksand:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root { color-scheme: dark; }
+  :root { color-scheme: dark; --lider-azul:#194383; --pirobat-verde:#2BD107; --pirobat-verde2:#30D979; --pirobat-dark:#3F444B; --pirobat-dark2:#303030; }
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: #202124; color: #e8eaed; font-family: 'Google Sans','Roboto',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; -webkit-font-smoothing: antialiased; }
-  a { color: #8ab4f8; text-decoration: none; }
+  html, body { margin: 0; padding: 0; background: #303030; color: #e8eaed; font-family: 'Roboto','Quicksand',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #30D979; text-decoration: none; }
   a:hover { text-decoration: underline; }
   .wrap { max-width: 1280px; margin: 0 auto; padding: 24px 20px 64px; }
-  header.top { display: flex; align-items: center; justify-content: space-between; padding: 22px 28px; background: #0d0d0d; border-radius: 12px; border-bottom: 4px solid #c4302b; margin-bottom: 24px; gap: 16px; flex-wrap: wrap; }
+  header.top { display: flex; align-items: center; justify-content: space-between; padding: 22px 28px; background: #3F444B; border-radius: 12px; border-bottom: 4px solid #2BD107; margin-bottom: 24px; gap: 16px; flex-wrap: wrap; }
   header.top .brand { display: flex; align-items: center; gap: 16px; }
   header.top .brand .logo-img { height: 56px; width: auto; display: block; }
-  header.top h1 { margin: 0; font-size: 22px; font-weight: 500; letter-spacing: -0.2px; color: #ffffff; }
-  header.top .sub { color: rgba(255,255,255,0.75); font-size: 13px; }
+  header.top h1 { margin: 0; font-family: 'Palanquin Dark','Roboto',sans-serif; font-size: 22px; font-weight: 600; letter-spacing: -0.2px; color: #ffffff; }
+  header.top .sub { color: rgba(255,255,255,0.75); font-size: 13px; font-family: 'Quicksand',sans-serif; }
   header.top .meta { font-size: 12px; color: rgba(255,255,255,0.75); text-align: right; }
   header.top .meta strong { color: #ffffff; }
   .section-title { display: flex; align-items: baseline; gap: 12px; margin: 32px 0 16px; flex-wrap: wrap; }
-  .section-title h2 { margin: 0; font-size: 18px; font-weight: 500; color: #e8eaed; }
-  .section-title .badge { font-size: 11px; padding: 3px 8px; border-radius: 999px; background: #2a2b2f; border: 1px solid #3c4043; color: #9aa0a6; }
+  .section-title h2 { margin: 0; font-family: 'Palanquin Dark','Roboto',sans-serif; font-size: 18px; font-weight: 600; color: #e8eaed; }
+  .section-title .badge { font-size: 11px; padding: 3px 8px; border-radius: 999px; background: #3F444B; border: 1px solid #4a5059; color: #b6e8aa; font-family: 'Quicksand',sans-serif; }
   .section-title .desc { font-size: 13px; color: #9aa0a6; }
-  .section-note { font-size: 12px; color: #9aa0a6; background: #2a2b2f; border: 1px solid #3c4043; border-radius: 8px; padding: 10px 14px; margin: 0 0 16px; }
+  .section-note { font-size: 12px; color: #9aa0a6; background: #3a3f46; border: 1px solid #4a5059; border-radius: 8px; padding: 10px 14px; margin: 0 0 16px; }
   .section-note b { color: #e8eaed; }
-  .section-note.alert { border-color: #ea4335; }
+  .section-note.alert { border-color: #DC0D1D; }
   .section-note.alert b { color: #f28b82; }
-  .section-note.live { border-color: #34a853; }
-  .section-note.live b { color: #81c995; }
-  .news-cat-title { display:flex; align-items:center; gap:10px; margin: 24px 0 12px; padding: 8px 12px; background: linear-gradient(90deg,#0d0d0d 0%, #2a2b2f 100%); border-left: 4px solid #fbbc04; border-radius: 6px; }
-  .news-cat-title h3 { margin:0; font-size:16px; font-weight:600; color:#fbbc04; }
-  .news-cat-title .cat-badge { font-size:10px; padding:3px 8px; border-radius:999px; background:#c4302b; color:#fff; font-weight:600; letter-spacing:0.5px; }
+  .section-note.live { border-color: #2BD107; }
+  .section-note.live b { color: #2BD107; }
+  .news-cat-title { display:flex; align-items:center; gap:10px; margin: 24px 0 12px; padding: 8px 12px; background: linear-gradient(90deg,#3F444B 0%, #303030 100%); border-left: 4px solid #2BD107; border-radius: 6px; }
+  .news-cat-title h3 { margin:0; font-family: 'Palanquin Dark','Roboto',sans-serif; font-size:16px; font-weight:600; color:#2BD107; }
+  .news-cat-title .cat-badge { font-size:10px; padding:3px 8px; border-radius:999px; background:#2BD107; color:#1a1a1a; font-weight:700; letter-spacing:0.5px; }
   .news-cat-title .cat-desc { font-size:12px; color:#bdc1c6; margin-left:auto; }
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; }
-  .card { background: #2a2b2f; border: 1px solid #3c4043; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; }
-  .card.live { border-color: #34a853; }
+  .card { background: #3a3f46; border: 1px solid #4a5059; border-radius: 12px; padding: 18px; display: flex; flex-direction: column; }
+  .card.live { border-color: #2BD107; }
   .card-head { display: flex; align-items: center; gap: 12px; }
   .sym { width: 38px; height: 38px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: #202124; flex-shrink: 0; }
   .sym.pb { background: #8ab4f8; }
@@ -61,11 +64,11 @@
   .pill.up { background: rgba(52,168,83,0.15); color: #34a853; }
   .pill.down { background: rgba(234,67,53,0.15); color: #ea4335; }
   .timestamp { font-size: 11px; color: #9aa0a6; margin-top: 6px; }
-  .timestamp .src { color: #8ab4f8; margin-left: 6px; }
-  .tabs { display: flex; gap: 4px; margin: 14px 0 8px; border-bottom: 1px solid #3c4043; user-select: none; }
-  .tab { font-size: 12px; padding: 6px 10px; color: #9aa0a6; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s, background 0.15s; border-radius: 4px 4px 0 0; }
-  .tab:hover { color: #e8eaed; background: rgba(138,180,248,0.08); }
-  .tab.active { color: #8ab4f8; border-bottom-color: #8ab4f8; background: transparent; }
+  .timestamp .src { color: #30D979; margin-left: 6px; }
+  .tabs { display: flex; gap: 4px; margin: 14px 0 8px; border-bottom: 1px solid #4a5059; user-select: none; }
+  .tab { font-size: 12px; padding: 6px 10px; color: #9aa0a6; cursor: pointer; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s, background 0.15s; border-radius: 4px 4px 0 0; font-family: 'Quicksand',sans-serif; font-weight: 500; }
+  .tab:hover { color: #e8eaed; background: rgba(43,209,7,0.10); }
+  .tab.active { color: #2BD107; border-bottom-color: #2BD107; background: transparent; }
   .tab.active:hover { background: transparent; }
   .chart-wrap { height: 140px; position: relative; margin-bottom: 14px; }
   .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; border-top: 1px solid #3c4043; padding-top: 12px; }
@@ -75,7 +78,7 @@
   .stat .v.up { color: #34a853; }
   .stat .v.down { color: #ea4335; }
   .news-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 16px; }
-  .news-card { background: #2a2b2f; border: 1px solid #3c4043; border-radius: 12px; padding: 18px; border-left: 4px solid #3c4043; }
+  .news-card { background: #3a3f46; border: 1px solid #4a5059; border-radius: 12px; padding: 18px; border-left: 4px solid #4a5059; }
   .news-card.red { border-left-color: #ea4335; }
   .news-card.yellow { border-left-color: #fbbc04; }
   .news-card.orange { border-left-color: #f29900; }
@@ -89,14 +92,14 @@
   .news-card.blue .news-tag { color: #8ab4f8; }
   .news-card.green .news-tag { color: #81c995; }
   .news-card.purple .news-tag { color: #c58af9; }
-  .news-card h3 { margin: 4px 0 8px; font-size: 15px; font-weight: 500; color: #e8eaed; }
+  .news-card h3 { margin: 4px 0 8px; font-family: 'Palanquin Dark','Roboto',sans-serif; font-size: 15px; font-weight: 500; color: #e8eaed; }
   .news-card p { margin: 0 0 10px; color: #bdc1c6; font-size: 13px; line-height: 1.5; }
   .news-sources { font-size: 11px; color: #9aa0a6; }
   .news-sources a { margin-right: 10px; }
   .flag { display:inline-block; font-size:10px; font-weight:700; padding:2px 6px; border-radius:3px; margin-right:6px; }
-  .flag.br { background:#34a853; color:#fff; }
-  .flag.intl { background:#8ab4f8; color:#0d0d0d; }
-  footer.bot { margin-top: 40px; padding: 24px 20px; background: #0d0d0d; border-radius: 12px; border-top: 4px solid #c4302b; text-align: center; color: #9aa0a6; font-size: 12px; }
+  .flag.br { background:#2BD107; color:#1a1a1a; }
+  .flag.intl { background:#194383; color:#fff; }
+  footer.bot { margin-top: 40px; padding: 24px 20px; background: #3F444B; border-radius: 12px; border-top: 4px solid #2BD107; text-align: center; color: #9aa0a6; font-size: 12px; font-family: 'Quicksand',sans-serif; }
   footer.bot strong { color: #e8eaed; }
   footer.bot .footer-logo { height: 36px; width: auto; opacity: 0.85; margin: 0 auto 14px; display: block; }
   @media (max-width: 540px) { .price { font-size: 22px; } header.top h1 { font-size: 18px; } }
@@ -107,7 +110,11 @@
 
   <header class="top">
     <div class="brand">
-      <div class="logo-img" style="height:56px;width:56px;background:#c4302b;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;color:#fbbc04;font-family:Georgia,serif;">P</div>
+      <div style="display:flex;flex-direction:column;line-height:1;justify-content:center;">
+        <span style="font-family:'Palanquin Dark','Roboto',sans-serif;font-size:32px;font-weight:700;color:#ffffff;letter-spacing:-1px;">pir<span style="display:inline-block;border:2px solid #2BD107;border-radius:4px;padding:0 3px;margin:0 1px;color:#2BD107;line-height:0.9;">o</span>bat</span>
+        <span style="font-family:'Quicksand',sans-serif;font-size:10px;font-weight:600;color:#2BD107;letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;">Acumuladores de Energia</span>
+      </div>
+      <div style="width:1px;height:46px;background:#5a616b;opacity:0.5;"></div>
       <div>
         <h1>Cotações de Matérias-Primas — Baterias Chumbo-Ácido</h1>
         <div class="sub">Painel diário · LME · SHFE/SMM · Insumos Químicos</div>
@@ -249,7 +256,10 @@
   </div>
 
   <footer class="bot">
-    <div class="footer-logo" style="height:36px;width:36px;background:#c4302b;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px;color:#fbbc04;font-family:Georgia,serif;margin:0 auto 14px;">P</div>
+    <div style="margin:0 auto 14px;display:flex;flex-direction:column;align-items:center;line-height:1;">
+      <span style="font-family:'Palanquin Dark','Roboto',sans-serif;font-size:24px;font-weight:700;color:#ffffff;letter-spacing:-0.8px;">pir<span style="display:inline-block;border:2px solid #2BD107;border-radius:3px;padding:0 2px;color:#2BD107;line-height:0.9;">o</span>bat</span>
+      <span style="font-family:'Quicksand',sans-serif;font-size:8px;font-weight:600;color:#2BD107;letter-spacing:1.2px;text-transform:uppercase;margin-top:3px;">Acumuladores de Energia</span>
+    </div>
     <div><strong>Pirobat</strong> · Painel de Matérias-Primas · Atualização automática diária às <strong>08:00 BRT</strong></div>
     <div style="margin-top:6px">Fontes: <strong>LME via Westmetall</strong> (Settlement Cash oficial), SHFE, SMM, Argus Metals, Argus Sulphur, S&amp;P Global · Dados de referência para tomada de decisão comercial</div>
   </footer>
